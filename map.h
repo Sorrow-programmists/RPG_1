@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <algorithm>
 #include <map>
+#include "TextureManager.h"
 
 class Map {
 public:
@@ -33,12 +34,12 @@ public:
 
 	void setTexture(sf::Image * image)
 	{
-		_image = image;
+		_image = TextureManager::addImage(*image);
 	}
 
-	void loadTexture(const sf::IntRect &size)
+	void loadTextureFromImage(const sf::IntRect &size)
 	{
-		_fullTexture->loadFromImage(*_image);
+		_fullTexture = TextureManager::loadTextureFromImage(*_image);
 		for (int i(0); i < _image->getSize().x; i += size.width)
 		{
 			for (int j(0); j < _image->getSize().y; j += size.height)
@@ -46,6 +47,7 @@ public:
 				sf::Sprite sprite;
 				sprite.setTexture(*_fullTexture);
 				sprite.setTextureRect(sf::IntRect(size.left + i, size.top + j, size.width, size.height));
+				TextureManager::makeSprite();
 				_texture.insert(std::pair<int,sf::Sprite*>(_texture.size() + 1, &sprite));
 			}
 		}
