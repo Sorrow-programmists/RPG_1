@@ -5,70 +5,74 @@
 class TextureManager
 {
 public:
-	static int loadImage(const std::string &filename)
+	static sf::Image * loadImage(const std::string &filename)
 	{
 		sf::Image image;
 		if (!image.loadFromFile(filename))
-			return -1;
+			return nullptr;
 		_image.emplace_back(image);
-		return _image.size() - 1;
+		return &_image.at(_image.size() - 1);
 	}
 
-	static const sf::Texture * getTexture(int index)
-	{
-		return &_texture.at(index);
-	}
-
-	static const sf::Image * getImage(int index)
-	{
-		return &_image.at(index);
-	}
-
-	static int addImage(const sf::Image &image)
+	static sf::Image * addImage(const sf::Image &image)
 	{
 		_image.emplace_back(image);
-		return _image.size();
+		return &_image.at(_image.size() - 1);
 	}
 
-	static int loadTextureFromImage(int index, sf::IntRect &area = sf::IntRect())
+	static sf::Texture * loadTextureFromImage(sf::Image &image, sf::IntRect &area = sf::IntRect())
 	{
 		sf::Texture texture;
-		texture.loadFromImage(_image.at(index), area);
+		texture.loadFromImage(image, area);
 		_texture.emplace_back(texture);
-		return _texture.size() - 1;
+		return &_texture.at(_texture.size() - 1);
 	}
 
-	static int makeSprite(const sf::Texture *texture = nullptr,sf::IntRect &area = sf::IntRect())
+	static sf::Sprite * makeSprite(const sf::Texture *texture = nullptr, sf::IntRect &area = sf::IntRect(),
+		sf::Vector2f position = sf::Vector2f(0, 0), float rotation = 0,
+		sf::Color color = sf::Color(255, 255, 255, 255), sf::Vector2f scale = sf::Vector2f(0, 0))
 	{
 		sf::Sprite sprite;
 		if (texture != nullptr)
 			sprite.setTexture(*texture);
 		if (area != sf::IntRect())
 			sprite.setTextureRect(area);
+
+		sprite.setRotation(rotation);
+		sprite.setPosition(position);
+		sprite.setScale(scale);
+		sprite.setColor(color);
+
 		_sprite.emplace_back(sprite);
-		return _sprite.size() - 1;
+		return &_sprite.at(_sprite.size() - 1);
 	}
 
-	static const sf::Sprite * getSprite(int index)
-	{
-		return &_sprite.at(index);
-	}
-
-	static int addTexture(const sf::Texture & texture)
+	static sf::Texture * addTexture(const sf::Texture & texture)
 	{
 		_texture.emplace_back(texture);
-		return _texture.size() - 1;
+		return &_texture.at(_texture.size() - 1);
 	}
 
-	static int addSprite(const sf::Sprite &sprite)
+	static sf::Sprite * addSprite(const sf::Sprite &sprite)
 	{
 		_sprite.emplace_back(sprite);
-		return _sprite.size() - 1;
+		return &_sprite.at(_sprite.size() - 1);
 	}
 
-	static void drawSprite(sf::RenderWindow &window,int index)
+	static void draw(sf::RenderWindow &window, const sf::Drawable &drawable)
 	{
-		window.draw(_sprite.at(index));
+		window.draw(drawable);
+	}
+
+	static void quickDraw(sf::RenderWindow &window, const std::string &filename, sf::IntRect &area = sf::IntRect(),
+		sf::Vector2f position = sf::Vector2f(0, 0), float rotation = 0,
+		sf::Color color = sf::Color(255, 255, 255, 255), sf::Vector2f scale = sf::Vector2f(0, 0))
+	{
+		sf::Texture texture;
+		texture.loadFromFile(filename);
+		void * ind = addTexture(texture);
+		ind = makeSprite((sf::Texture*)ind, area, position, rotation, color, scale);
+		draw(window, *(sf::Sprite*)ind);
 	}
 
 private:
