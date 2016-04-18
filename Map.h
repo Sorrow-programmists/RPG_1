@@ -38,6 +38,11 @@ public:
 	{
 		_obj.insert(std::pair<int,Object>(index, obj));
 	}
+	const std::map<int, Object> &getStlMap() const
+	{
+		return _obj;
+	}
+
 	const Object &getObject(const unsigned int &index) const
 	{
 		return _obj.at(index);
@@ -96,11 +101,11 @@ public:
 			return;
 		}
 	}
-	sf::Vector2u getSize()
+	const sf::Vector2u &getSize() const
 	{
 		return sf::Vector2u(_width, _height);
 	}
-	sf::Vector2u getSpriteSize()
+	const sf::Vector2u &getSpriteSize() const
 	{
 		return sf::Vector2u(_widthS, _heightS);
 	}
@@ -112,6 +117,30 @@ public:
 		delete[] _map;
 	}
 	
+
+	Map &operator=(const Map &right)
+	{
+		return Map(right);
+	}
+
+	Map(const Map &right)
+	{
+		_height = right.getSize().y;
+		_width = right.getSize().x;
+
+		_widthS = right.getSpriteSize().x;
+		_heightS = right.getSpriteSize().y;
+
+
+		_map = new uint8_t*[_width];
+		for (int i(0); i < _width; i++)
+			_map[i] = new uint8_t[_height];
+
+		for (int i(0); i < _width; i++)
+			for (int j(0); j < _height; j++)
+				_map[i][j] = right.getMapCode(i, j);
+		_obj = right.getStlMap();
+	}
 	
 private:
 	int _widthS, _heightS;
@@ -134,8 +163,6 @@ private:
 		_lnlt t = (begin + end) / 2;
 		
 	}*/
-	Map operator=(const Map&) = delete;
-	Map(const Map&) = delete;
 };
 
 
