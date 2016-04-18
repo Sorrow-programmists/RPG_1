@@ -4,16 +4,10 @@
 class Object
 {
 protected:
-	float X;
-	float Y;
-
-public:
-	sf::Texture texture;
 	sf::Sprite sprite;
-
-	void draw(sf::RenderWindow &window)
+public:
+	const sf::Sprite &getSprite() const
 	{
-		sprite.setPosition(X, Y);
-		window.draw(sprite);
+		return sprite;
 	}
 };
