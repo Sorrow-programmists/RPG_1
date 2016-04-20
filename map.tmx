@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="50" height="27" tilewidth="32" tileheight="32" backgroundcolor="#4d538c" nextobjectid="65">
  <tileset firstgid="1" name="MilesTailsPrower" tilewidth="32" tileheight="32" tilecount="725" columns="25">
-  <image source="../../testsfml/testsfml/images/MilesTailsPrower.gif" trans="ff00ff" width="800" height="940"/>
+  <image source="images/MilesTailsPrower.gif" trans="ff00ff" width="800" height="940"/>
  </tileset>
  <layer name="Слой тайлов 2" width="50" height="27">
   <data>

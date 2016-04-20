@@ -21,24 +21,24 @@ public:
 	Sprite sprite;
 	Player(char *chr, float X, float Y){
 		image.loadFromFile(chr);
-		    obj = lvl.GetAllObjects();
-			x = X;
-			y = Y;
-			texture.loadFromImage(image);
-			sprite.setTexture(texture);
-			sprite.setTextureRect(IntRect(0, 0, 32, 32));
-			sprite.setPosition(x,y);
-	   }
-	
-	   void checkCollisionWithMap()
-	   {
-		   for (int i = 0; i<obj.size(); i++)
-		   if (FloatRect(x,y,32,32).intersects(obj[i].rect))
-		   {
-			  //пригодится
-		   }
-	   }
-	
+		obj = lvl.GetAllObjects();
+		x = X;
+		y = Y;
+		texture.loadFromImage(image);
+		sprite.setTexture(texture);
+		sprite.setTextureRect(IntRect(0, 0, 32, 32));
+		sprite.setPosition(x, y);
+	}
+
+	void checkCollisionWithMap()
+	{
+		for (int i = 0; i<obj.size(); i++)
+			if (FloatRect(x, y, 32, 32).intersects(obj[i].rect))
+			{
+				//пригодится
+			}
+	}
+
 };
 class StateStack
 {
@@ -56,7 +56,7 @@ public:
 	}
 	static void perform(RenderWindow& window, View& view)
 	{
-		
+
 		if (_state.empty()) return;
 		_state.at(_state.size() - 1)(window, view);
 	}
@@ -75,7 +75,7 @@ void game(RenderWindow&, View&);
 void menu(RenderWindow& window, View& view)
 {
 	bool MenuIsWorked = true;
-	while (window.isOpen()&&MenuIsWorked)
+	while (window.isOpen() && MenuIsWorked)
 	{
 		Event event;
 		window.clear(Color::Blue);
@@ -103,7 +103,7 @@ void menu(RenderWindow& window, View& view)
 		//
 		window.display();
 	}
-	StateStack::perform(window,view);
+	StateStack::perform(window, view);
 }
 void game(RenderWindow& window, View& view)
 {
@@ -112,7 +112,7 @@ void game(RenderWindow& window, View& view)
 	Object player = lvl.GetObject("player");
 	Player p("images/Map.png", player.rect.left, player.rect.top);
 	bool GameIsWorked = true;
-	while (window.isOpen()&&GameIsWorked) 
+	while (window.isOpen() && GameIsWorked)
 	{
 		Event event;
 		while (window.pollEvent(event))
@@ -127,15 +127,15 @@ void game(RenderWindow& window, View& view)
 		{
 			StateStack::popAll();
 			StateStack::push(pause);
-			StateStack::perform(window,view);
+			StateStack::perform(window, view);
 		}
-		view.setCenter(player.rect.left,player.rect.top);
+		view.setCenter(player.rect.left, player.rect.top);
 		window.setView(view);
 		window.clear();
 		lvl.Draw(window);
 		window.draw(p.sprite);
 		window.display();
-		
+
 	}
 	StateStack::perform(window, view);
 }
@@ -143,7 +143,7 @@ void pause(RenderWindow& window, View& view)
 {
 
 	bool PauseIsWorked = true;
-	while (window.isOpen()&&PauseIsWorked)
+	while (window.isOpen() && PauseIsWorked)
 	{
 		window.clear(Color::Red);
 		Event event;
@@ -176,6 +176,6 @@ int main()
 	RenderWindow window(VideoMode(640, 480), "F14");
 	view.reset(FloatRect(0, 0, 640, 480));
 	StateStack::push(menu);
-	StateStack::perform(window,view);
+	StateStack::perform(window, view);
 	return 0;
 }
