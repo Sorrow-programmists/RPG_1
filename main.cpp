@@ -129,7 +129,7 @@ void game(RenderWindow& window, View& view)
 			StateStack::push(pause);
 			StateStack::perform(window, view);
 		}
-		view.setCenter(player.rect.left, player.rect.top);
+		view.setCenter(player.rect.left+16, player.rect.top+16);
 		window.setView(view);
 		window.clear();
 		lvl.Draw(window);
