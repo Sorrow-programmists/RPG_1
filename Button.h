@@ -4,18 +4,21 @@
 
 using namespace sf;
 
-class Buutons
+class Buttons
 {
 private: int weight = 0;
 private: int height = 0;
 public: bool work = true;
 private: Sprite sprite;
+private: Image image1;
+private: Image image2;
+private: int Nimg = 0;
 private: Texture texture;
 private: Vector2f posf;
 private: Vector2i posi;
 private: IntRect Rect;
 private: bool drawing = true;
-public: bool ifBuutonCoordRegr(int x,int y)//паполи на кнопку или нет
+public: bool isBuutonCoord(int x,int y)
 {
 	int X = x;
 	int Y = y;
@@ -36,14 +39,16 @@ public: Vector2f getPosition()
 {
 	return sprite.getPosition();
 }
-public: void show(RenderWindow &_window)
+public: void show(RenderWindow &window)
 {
 	if (drawing)
-	_window.draw(sprite);
+	window.draw(sprite);
 }
-public: Buutons(char str[80], int X, int Y, int _weight, int _height, bool _work = true)
+public: Buttons(Image img1,Image img2, int X, int Y, int _weight = 128, int _height = 64, bool _work = true)
 {
-	texture.loadFromFile(str);
+	image1 = img1;
+	image2 = img2;
+	texture.loadFromImage(image1);
 	work = _work;
 	posi.x = X;
 	posi.y = Y;
@@ -52,14 +57,21 @@ public: Buutons(char str[80], int X, int Y, int _weight, int _height, bool _work
 	sprite.setTexture(texture);
 	sprite.setTextureRect(IntRect(0, 0, weight, height)); sprite.setPosition(X,Y);
 }
-public: void changeTexture(char str[80])
+public: void changeTexture(Image img)
 {
-	texture.loadFromFile(str);
+	if (Nimg) {
+		texture.loadFromFile(image1); 
+		Nimg = 0;
+	}else 
+	{
+		Nimg = 1;
+		texture.loadFromFile(image2); 
+	}
 	sprite.setTexture(texture);
 	sprite.setTextureRect(IntRect(0, 0, weight, height)); 
 }
-public: void deleteB()
+public: void Drawable()
 {
-	drawing = false;
+	drawing = !drawing;
 }
 };
