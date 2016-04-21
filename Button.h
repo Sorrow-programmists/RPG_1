@@ -39,10 +39,12 @@ public: Vector2f getPosition()
 {
 	return sprite.getPosition();
 }
-public: void show(RenderWindow &window)
+public: void show(RenderWindow &window,View&view)
 {
+	Vector2i fre= view.getCenter();
 	if (drawing)
-	window.draw(sprite);
+		if ()
+			window.draw(sprite);
 }
 public: Buttons(Image img1,Image img2, int X, int Y, int _weight = 128, int _height = 64, bool _work = true)
 {
