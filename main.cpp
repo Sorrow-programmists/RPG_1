@@ -3,8 +3,7 @@
 #include <sstream>
 #include "iostream"
 #include "level.h"
-#include <vector>
-#include <list>
+#include <algorithm>
 
 
 int arg = 0;
@@ -66,8 +65,11 @@ public:
 	}
 	static void popAll()
 	{
-
 		_state.clear();
+	}
+	static bool isWorked(void(*state)(RenderWindow&, View&))
+	{
+		return (find(_state.begin(),_state.end(),state) != _state.end());
 	}
 };
 std::vector<void(*)(RenderWindow&, View&)> StateStack::_state;
