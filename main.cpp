@@ -60,7 +60,7 @@ public:
 		if (_state.empty()) return;
 		_state.at(_state.size() - 1)(window, view);
 	}
-	static void(*)(RenderWindow&, View&) current()
+	static auto current()
 	{
 		return _state.at(_state.size() - 1);
 	}
