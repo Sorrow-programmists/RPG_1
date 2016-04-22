@@ -78,6 +78,10 @@ void game(RenderWindow&, View&);
 
 void menu(RenderWindow& window, View& view)
 {
+	Texture texture;
+	texture.loadFromFile("images/map.png");
+	Sprite sprite;
+	sprite.setTexture(texture);
 	bool MenuIsWorked = true;
 	while (window.isOpen() && MenuIsWorked)
 	{
@@ -105,13 +109,12 @@ void menu(RenderWindow& window, View& view)
 			StateStack::push(game);
 		}
 		//
+		window.draw(sprite);
 		window.display();
 	}
-	StateStack::perform(window, view);
 }
 void game(RenderWindow& window, View& view)
 {
-
 	lvl.LoadFromFile("map.tmx");
 	Object player = lvl.GetObject("player");
 	Player p("images/Map.png", player.rect.left, player.rect.top);
@@ -129,9 +132,9 @@ void game(RenderWindow& window, View& view)
 		}
 		if (Keyboard::isKeyPressed(Keyboard::P))
 		{
-			StateStack::popAll();
 			StateStack::push(pause);
 			StateStack::perform(window, view);
+			if (StateStack::AvaibleFunc == menu) GameIsWorked = false;
 		}
 		view.setCenter(player.rect.left+16, player.rect.top+16);
 		window.setView(view);
@@ -141,7 +144,6 @@ void game(RenderWindow& window, View& view)
 		window.display();
 
 	}
-	StateStack::perform(window, view);
 }
 void pause(RenderWindow& window, View& view)
 {
@@ -168,18 +170,16 @@ void pause(RenderWindow& window, View& view)
 		if (Keyboard::isKeyPressed(Keyboard::G))
 		{
 			PauseIsWorked = false;
-			StateStack::popAll();
-			return;
 		}
 		window.display();
 	}
-	StateStack::perform(window, view);
 }
 int main()
 {
 	RenderWindow window(VideoMode(640, 480), "F14");
 	view.reset(FloatRect(0, 0, 640, 480));
 	StateStack::push(menu);
+	while (window.isOpen())
 	StateStack::perform(window, view);
 	return 0;
 }
