@@ -35,7 +35,7 @@ public:
 		for (int i = 0; i<obj.size(); i++)
 			if (FloatRect(x, y, 32, 32).intersects(obj[i].rect))
 			{
-				//ïðèãîäèòñÿ
+				//Ã¯Ã°Ã¨Ã£Ã®Ã¤Ã¨Ã²Ã±Ã¿
 			}
 	}
 
@@ -59,6 +59,10 @@ public:
 
 		if (_state.empty()) return;
 		_state.at(_state.size() - 1)(window, view);
+	}
+	static void(*)(RenderWindow&, View&) current()
+	{
+		return _state.at(_state.size() - 1);
 	}
 	static void popAll()
 	{
