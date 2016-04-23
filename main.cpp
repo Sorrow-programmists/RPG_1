@@ -84,8 +84,7 @@ void menu(RenderWindow& window, View& view)
 	texture.loadFromFile("images/map.png");
 	Sprite sprite;
 	sprite.setTexture(texture);
-	bool MenuIsWorked = true;
-	while (window.isOpen() && MenuIsWorked)
+	while (window.isOpen() && StateStack::isWorked(menu))
 	{
 		Event event;
 		window.clear(Color::Blue);
@@ -106,11 +105,9 @@ void menu(RenderWindow& window, View& view)
 		//
 		if (Keyboard::isKeyPressed(Keyboard::G))
 		{
-			MenuIsWorked = false;
 			StateStack::popAll();
 			StateStack::push(game);
 		}
-		//
 		window.draw(sprite);
 		window.display();
 	}
@@ -120,9 +117,15 @@ void game(RenderWindow& window, View& view)
 	lvl.LoadFromFile("map.tmx");
 	Object player = lvl.GetObject("player");
 	Player p("images/Map.png", player.rect.left, player.rect.top);
-	bool GameIsWorked = true;
-	while (window.isOpen() && GameIsWorked)
+	while (window.isOpen() && StateStack::isWorked(game))
 	{
+		
+		view.setCenter(player.rect.left+16, player.rect.top+16);
+		window.setView(view);
+		window.clear();
+		lvl.Draw(window);
+		window.draw(p.sprite);
+		window.display();
 		Event event;
 		while (window.pollEvent(event))
 		{
@@ -136,24 +139,16 @@ void game(RenderWindow& window, View& view)
 		{
 			StateStack::push(pause);
 			StateStack::perform(window, view);
-			if (StateStack::current()!=game) GameIsWorked = false;
 		}
-		view.setCenter(player.rect.left+16, player.rect.top+16);
-		window.setView(view);
-		window.clear();
-		lvl.Draw(window);
-		window.draw(p.sprite);
-		window.display();
-
 	}
 }
 void pause(RenderWindow& window, View& view)
 {
-
-	bool PauseIsWorked = true;
-	while (window.isOpen() && PauseIsWorked)
+	while (window.isOpen() && StateStack::isWorked(pause))
 	{
 		window.clear(Color::Red);
+		window.display();
+
 		Event event;
 		while (window.pollEvent(event))
 		{
@@ -166,14 +161,12 @@ void pause(RenderWindow& window, View& view)
 		if (Keyboard::isKeyPressed(Keyboard::M))
 		{
 			StateStack::popAll();
-			PauseIsWorked = false;
 			StateStack::push(menu);
 		}
 		if (Keyboard::isKeyPressed(Keyboard::G))
 		{
-			PauseIsWorked = false;
+			StateStack::pop();
 		}
-		window.display();
 	}
 }
 int main()
