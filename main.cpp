@@ -136,7 +136,7 @@ void game(RenderWindow& window, View& view)
 		{
 			StateStack::push(pause);
 			StateStack::perform(window, view);
-			if (StateStack::AvaibleFunc == menu) GameIsWorked = false;
+			if (StateStack::isWorked(menu)) GameIsWorked = false;
 		}
 		view.setCenter(player.rect.left+16, player.rect.top+16);
 		window.setView(view);
