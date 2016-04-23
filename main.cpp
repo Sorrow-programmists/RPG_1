@@ -59,7 +59,7 @@ public:
 		if (_state.empty()) return;
 		_state.at(_state.size() - 1)(window, view);
 	}
-	static auto current()
+	static auto current() -> decltype(_state.at(0))
 	{
 		return _state.at(_state.size() - 1);
 	}
