@@ -88,7 +88,7 @@
     <ClCompile Include="TinyXML\tinyxmlparser.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Buuton.h" />
+    <ClInclude Include="Button.h" />
     <ClInclude Include="keyTreatment.h" />
     <ClInclude Include="level.h" />
     <ClInclude Include="level.hpp" />
