@@ -141,7 +141,7 @@ void game(RenderWindow &window,View &view)
 		window.setView(view);
 		window.clear(Color::Yellow);
 		lvl.Draw(window);
-		window.draw(player.sprite);
+		window.draw(p.sprite);
 		window.display();
 		Event event;
 		while (window.pollEvent(event))
