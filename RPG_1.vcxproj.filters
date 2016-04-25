@@ -56,7 +56,7 @@
     <ClInclude Include="keyTreatment.h">
       <Filter>Файлы исходного кода</Filter>
     </ClInclude>
-    <ClInclude Include="Buuton.h">
+    <ClInclude Include="Button.h">
       <Filter>Файлы исходного кода</Filter>
     </ClInclude>
   </ItemGroup>
