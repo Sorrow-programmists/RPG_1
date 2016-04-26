@@ -1,4 +1,4 @@
-#include <SFML/Graphics.hpp>
+﻿#include <SFML/Graphics.hpp>
 #include <iostream>
 #include <sstream>
 #include "iostream"
@@ -11,6 +11,33 @@ int arg = 0;
 using namespace sf;
 Level lvl;
 View view;
+class Player {
+public:
+	std::vector<Object> obj;
+	float x, y;
+	Image image;
+	Texture texture;
+	Sprite sprite;
+	Player(char *chr, float X, float Y){
+		image.loadFromFile(chr);
+		obj = lvl.GetAllObjects();
+		x = X;
+		y = Y;
+		texture.loadFromImage(image);
+		sprite.setTexture(texture);
+		sprite.setPosition(x, y);
+	}
+
+	void checkCollisionWithMap()
+	{
+		for (int i = 0; i<obj.size(); i++)
+			if (FloatRect(x, y, 32, 32).intersects(obj[i].rect))
+			{
+				//ïðèãîäèòñÿ
+			}
+	}
+
+};
 class StateStack
 {
 private:
@@ -45,64 +72,68 @@ public:
 	}
 };
 std::vector<void(*)(RenderWindow&, View&)> StateStack::_state;
-class Player {
-public:
-	std::vector<Object> obj;
-	float x, y;
-	Image image;
-	Texture texture;
-	Sprite sprite;
-	Player(char *chr, float X, float Y){
-		image.loadFromFile(chr);
-		obj = lvl.GetAllObjects();
-		x = X;
-		y = Y;
-		texture.loadFromImage(image);
-		sprite.setTexture(texture);
-		sprite.setTextureRect(IntRect(0, 0, 32, 32));
-		sprite.setPosition(x, y);
-	}
 
-	void checkCollisionWithMap()
+void pause(RenderWindow&, View&);
+
+void game(RenderWindow&, View&);
+
+void menu(RenderWindow& window, View& view)
+{
+	view.setCenter(320,240);
+	window.setView(view);
+	while (window.isOpen() && StateStack::isWorked(menu))
 	{
-		for (int i = 0; i<obj.size(); i++)
-			if (FloatRect(x, y, 32, 32).intersects(obj[i].rect))
-			{
-
-			}
-	}
-
-};
-struct State
-{
-	int a = 0;
-	
-};
-State s;
-void game(RenderWindow &, View &);
-void pause(RenderWindow &, View &);
-void menu(RenderWindow &window,View &view)
-{
-	Texture texture;
-	texture.loadFromFile("images/map.png");
-	Sprite sprite;
-	sprite.setTexture(texture);
-	sprite.setPosition(0, 0);
-	while (window.isOpen()&&StateStack::isWorked(menu)){
 		Event event;
+		window.clear(Color::Blue);
 		while (window.pollEvent(event))
+		{
 			if (event.type == Event::Closed)
+			{
+				window.close();
 				StateStack::popAll();
-		if (Keyboard::isKeyPressed(Keyboard::Escape)){
+			}
+		}
+		if (Keyboard::isKeyPressed(Keyboard::Escape))
+		{
+			window.close();
 			StateStack::popAll();
 		}
-		if (Keyboard::isKeyPressed(Keyboard::G)){
+		if (Keyboard::isKeyPressed(Keyboard::G))
+		{
 			StateStack::popAll();
 			StateStack::push(game);
 		}
-		window.clear();
-		window.draw(sprite);
 		window.display();
+	}
+}
+void game(RenderWindow& window, View& view)
+{
+	lvl.LoadFromFile("map.tmx");
+	Object player = lvl.GetObject("player");
+	Player p("images/Map.png", player.rect.left, player.rect.top);
+	while (window.isOpen() && StateStack::isWorked(game))
+	{
+
+		view.setCenter(player.rect.left + 16, player.rect.top + 16);
+		window.setView(view);
+		window.clear();
+		lvl.Draw(window);
+		window.draw(p.sprite);
+		window.display();
+		Event event;
+		while (window.pollEvent(event))
+		{
+			if (event.type == sf::Event::Closed)
+			{
+				window.close();
+				StateStack::popAll();
+			}
+		}
+		if (Keyboard::isKeyPressed(Keyboard::P))
+		{
+			StateStack::push(pause);
+			StateStack::perform(window, view);
+		}
 	}
 }
 void pause(RenderWindow& window, View& view)
@@ -117,6 +148,7 @@ void pause(RenderWindow& window, View& view)
 		{
 			if (event.type == Event::Closed)
 			{
+				window.close();
 				StateStack::popAll();
 			}
 		}
@@ -127,33 +159,8 @@ void pause(RenderWindow& window, View& view)
 		}
 		if (Keyboard::isKeyPressed(Keyboard::G))
 		{
-			StateStack::popAll();
-			StateStack::push(game);
+			StateStack::pop();
 		}
-	}
-}
-void game(RenderWindow &window,View &view)
-{
-	lvl.LoadFromFile("map.tmx");
-	Object player = lvl.GetObject("player");
-	Player p("images/Map.png", player.rect.left, player.rect.top);
-	while (window.isOpen() && StateStack::isWorked(game)){
-		window.setView(view);
-		window.clear(Color::Yellow);
-		lvl.Draw(window);
-		window.draw(p.sprite);
-		window.display();
-		Event event;
-		while (window.pollEvent(event))
-			if (event.type == Event::Closed){
-				StateStack::popAll();
-			}
-		if (Keyboard::isKeyPressed(Keyboard::Escape)){
-			StateStack::popAll();
-			StateStack::push(pause);
-			StateStack::perform(window,view);
-		}
-
 	}
 }
 int main()
@@ -161,15 +168,7 @@ int main()
 	RenderWindow window(VideoMode(640, 480), "F14");
 	view.reset(FloatRect(0, 0, 640, 480));
 	StateStack::push(menu);
-	while (StateStack::isWorked(menu) || StateStack::isWorked(game))
-	{
-		StateStack::perform(window,view);
-	}
-	//switch (s.a)
-	//{
-	//case 1:menu(window, view);
-	//case 2:game(window, view);
-	//}
-	//StateStack::perform(window, view);
+	while (window.isOpen())
+		StateStack::perform(window, view);
 	return 0;
 }
